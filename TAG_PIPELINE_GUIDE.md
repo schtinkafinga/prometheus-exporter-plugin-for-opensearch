@@ -10,7 +10,11 @@ This repository now includes automated pipelines that trigger when you push a gi
   - Builds the project
   - Runs tests
   - Creates a GitHub release
-  - Uploads the plugin ZIP as a release asset
+  - Uploads multiple build artifacts as release assets:
+    - Plugin ZIP (for OpenSearch installation)
+    - Plugin JAR (compiled plugin)
+    - Sources JAR (source code)
+    - Javadoc JAR (API documentation)
 - **Permissions:** Requires `contents: write` permission
 
 ### 2. GitHub Packages Workflow (`.github/workflows/publish-packages.yml`)
@@ -70,7 +74,11 @@ git push origin 2.18.0.0
 
 This will:
 1. Trigger both workflows
-2. Create a GitHub release with the ZIP artifact
+2. Create a GitHub release with multiple build artifacts:
+   - Plugin ZIP (for installation)
+   - Plugin JAR (compiled plugin)
+   - Sources JAR (source code)
+   - Javadoc JAR (API documentation)
 3. Publish the Maven artifacts to GitHub Packages
 
 ## Installation
