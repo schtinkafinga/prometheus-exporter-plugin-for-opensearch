@@ -16,6 +16,7 @@ This repository now includes automated pipelines that trigger when you push a gi
     - Sources JAR (source code)
     - Javadoc JAR (API documentation)
 - **Permissions:** Requires `contents: write` permission
+- **Updated:** Uses modern `softprops/action-gh-release@v1` action for reliable release creation
 
 ### 2. GitHub Packages Workflow (`.github/workflows/publish-packages.yml`)
 - **Triggers:** On any tag push
@@ -94,6 +95,7 @@ Once the release is created, users can install the plugin using:
 - **Permission denied:** Make sure your repository has the necessary permissions enabled in Settings → Actions → General
 - **Build fails:** Check that the version in `gradle.properties` matches the OpenSearch version compatibility
 - **Tag already exists:** Delete the existing tag locally and remotely before recreating it
+- **Release workflow improvements:** The release workflow now uses modern GitHub Actions (`softprops/action-gh-release@v1`) instead of deprecated actions for more reliable release creation
 
 ## Manual Release Process
 
