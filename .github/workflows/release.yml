@@ -25,13 +25,10 @@ jobs:
       run: ./gradlew clean build
     
     - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: ${{ github.ref_name }}
-        release_name: Release ${{ github.ref_name }}
+        name: Release ${{ github.ref_name }}
         body: |
           Release ${{ github.ref_name }}
           
@@ -47,43 +44,10 @@ jobs:
           ```
         draft: false
         prerelease: false
-    
-    - name: Upload Plugin ZIP
-      uses: actions/upload-release-asset@v1
+        files: |
+          ./build/distributions/prometheus-exporter-${{ github.ref_name }}.zip
+          ./build/distributions/prometheus-exporter-${{ github.ref_name }}.jar
+          ./build/distributions/prometheus-exporter-${{ github.ref_name }}-sources.jar
+          ./build/distributions/prometheus-exporter-${{ github.ref_name }}-javadoc.jar
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/distributions/prometheus-exporter-${{ github.ref_name }}.zip
-        asset_name: prometheus-exporter-${{ github.ref_name }}.zip
-        asset_content_type: application/zip
-    
-    - name: Upload Plugin JAR
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/distributions/prometheus-exporter-${{ github.ref_name }}.jar
-        asset_name: prometheus-exporter-${{ github.ref_name }}.jar
-        asset_content_type: application/java-archive
-    
-    - name: Upload Sources JAR
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/distributions/prometheus-exporter-${{ github.ref_name }}-sources.jar
-        asset_name: prometheus-exporter-${{ github.ref_name }}-sources.jar
-        asset_content_type: application/java-archive
-    
-    - name: Upload Javadoc JAR
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./build/distributions/prometheus-exporter-${{ github.ref_name }}-javadoc.jar
-        asset_name: prometheus-exporter-${{ github.ref_name }}-javadoc.jar
-        asset_content_type: application/java-archive
