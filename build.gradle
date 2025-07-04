@@ -67,6 +67,7 @@ apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'opensearch.opensearchplugin'
 apply plugin: 'opensearch.yaml-rest-test'
+apply plugin: 'maven-publish'
 //apply plugin: 'checkstyle'
 
 def pluginName = pluginName
@@ -92,6 +93,14 @@ loggerUsageCheck.enabled = false
 
 // No need to validate pom, as we do not upload to maven/sonatype
 validateNebulaPom.enabled = false
+
+// Disable validateMavenPom if it exists
+gradle.taskGraph.whenReady {
+    def validateMavenPomTask = tasks.findByName('validateMavenPom')
+    if (validateMavenPomTask) {
+        validateMavenPomTask.enabled = false
+    }
+}
 
 repositories {
     mavenLocal()
@@ -339,4 +348,55 @@ task bwcTestSuite(type: RestIntegTestTask) {
 
 run {
     useCluster testClusters.integTest
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'org.opensearch.plugin.prometheus'
+            artifactId = 'prometheus-exporter'
+            version = project.version
+            
+            from components.java
+            artifact bundlePlugin
+            
+            pom {
+                name = 'Prometheus Exporter Plugin for OpenSearch'
+                description = 'Prometheus exporter plugin for OpenSearch'
+                url = 'https://github.com/schtinkafinga/prometheus-exporter-plugin-for-opensearch'
+                
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                
+                developers {
+                    developer {
+                        id = 'schtinkafinga'
+                        name = 'schtinkafinga'
+                        email = 'schtinkafinga@users.noreply.github.com'
+                    }
+                }
+                
+                scm {
+                    connection = 'scm:git:git://github.com/schtinkafinga/prometheus-exporter-plugin-for-opensearch.git'
+                    developerConnection = 'scm:git:ssh://github.com:schtinkafinga/prometheus-exporter-plugin-for-opensearch.git'
+                    url = 'https://github.com/schtinkafinga/prometheus-exporter-plugin-for-opensearch'
+                }
+            }
+        }
+    }
+    
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/${System.getenv("GITHUB_REPOSITORY")}")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
 }
