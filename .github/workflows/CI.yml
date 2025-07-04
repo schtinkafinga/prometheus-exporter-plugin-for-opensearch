@@ -30,3 +30,38 @@ jobs:
     - name: Build and Run Tests
       run: |
           ./gradlew --info build
+
+    - name: Upload Plugin ZIP
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: prometheus-exporter-plugin-zip-java-${{ matrix.java }}
+        path: build/distributions/prometheus-exporter-*.zip
+        retention-days: 30
+
+    - name: Upload Plugin JAR
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: prometheus-exporter-plugin-jar-java-${{ matrix.java }}
+        path: |
+          build/distributions/prometheus-exporter-*.jar
+          !build/distributions/prometheus-exporter-*-sources.jar
+          !build/distributions/prometheus-exporter-*-javadoc.jar
+        retention-days: 30
+
+    - name: Upload Sources JAR
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: prometheus-exporter-sources-jar-java-${{ matrix.java }}
+        path: build/distributions/prometheus-exporter-*-sources.jar
+        retention-days: 30
+
+    - name: Upload Javadoc JAR
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: prometheus-exporter-javadoc-jar-java-${{ matrix.java }}
+        path: build/distributions/prometheus-exporter-*-javadoc.jar
+        retention-days: 30
